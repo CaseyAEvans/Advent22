@@ -69,6 +69,7 @@ data %>%
             .groups = "drop") %>%
   ungroup() %>%
   summarize(max(total_calories)) %>%
+  as.double() %>%
   return()
 }
 ```
@@ -80,7 +81,7 @@ ex1_input <- read.delim(here(here(), 'ExampleInputs/Day1_1.txt'),
                         ) %>%
   dplyr::rename('calories' = 1)
 
-maxcals(ex1_input)
+ex1 <- maxcals(ex1_input)
 
 p1_input <- read.delim(here(here(), 'PuzzleInputs/Day1_1.txt'),
                         header = F,
@@ -88,7 +89,7 @@ p1_input <- read.delim(here(here(), 'PuzzleInputs/Day1_1.txt'),
                         ) %>%
   dplyr::rename('calories' = 1)
 
-maxcals(p1_input)
+p1 <- maxcals(p1_input)
 ```
 
 
@@ -103,6 +104,34 @@ In the example above, the top three Elves are the fourth Elf (with 24000 Calorie
 
 Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
 
-```{r ex2}
+```{r top3cals_fn}
+top3cals <- function(data){
+  data$group[1] <- 1
 
+for (i in 2:nrow(data)){
+  if(is.na(data$calories[i])){
+    data$group[i] <- data$group[i - 1] + 1
+  }else{
+    data$group[i] <- data$group[i - 1]
+  }
+}
+
+data %>%
+  group_by(group) %>%
+  summarize(total_calories = sum(calories, na.rm = T),
+            .groups = "drop") %>%
+  slice_max(total_calories, n = 3) %>%
+  ungroup() %>%
+  summarize(sum(total_calories),
+            .groups = "drop") %>%
+  as.double() %>%
+  return()
+}
+
+```
+
+```{r pt2}
+ex2 <- top3cals(ex1_input)
+
+p2 <- top3cals(p1_input)
 ```
