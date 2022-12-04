@@ -1,0 +1,74 @@
+---
+title: "Day 4: Camp Cleanup"
+author: "Casey Evans"
+date: "2022-12-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(splitstackshape)
+```
+
+# Day 4: Camp Cleanup
+
+```{r data}
+e1 <- read.csv(here(here(), 'ExampleInputs/Day4.txt'),
+                 header = F,
+                 colClasses = 'character',
+                 col.names = c('r1', 'r2')) %>%
+  concat.split('r1', sep= '-') %>%
+  concat.split('r2', sep = '-') %>%
+  dplyr::rename('r1_min' = 'r1_1',
+                'r1_max' = 'r1_2',
+                'r2_min' = 'r2_1',
+                'r2_max' = 'r2_2') %>%
+  dplyr::filter((r1_min <= r2_min & r1_max >= r2_max) |
+                  (r2_min <= r1_min & r2_max >= r1_max)) %>%
+  nrow()
+
+pt1 <- read.csv(here(here(), 'PuzzleInputs/Day4.txt'),
+                   header = F,
+                   colClasses = 'character',
+                   col.names = c('r1', 'r2')) %>%
+  concat.split('r1', sep= '-') %>%
+  concat.split('r2', sep = '-') %>%
+  dplyr::rename('r1_min' = 'r1_1',
+                'r1_max' = 'r1_2',
+                'r2_min' = 'r2_1',
+                'r2_max' = 'r2_2') %>%
+  dplyr::filter((r1_min <= r2_min & r1_max >= r2_max) |
+                  (r2_min <= r1_min & r2_max >= r1_max)) %>%
+  nrow()
+
+
+e2 <- read.csv(here(here(), 'ExampleInputs/Day4.txt'),
+                 header = F,
+                 colClasses = 'character',
+                 col.names = c('r1', 'r2')) %>%
+  cSplit(c('r1', 'r2'), sep = '-', direction = 'wide') %>%
+  suppressWarnings() %>%
+  dplyr::rename('r1_min' = 'r1_1',
+                'r1_max' = 'r1_2',
+                'r2_min' = 'r2_1',
+                'r2_max' = 'r2_2') %>%
+  dplyr::filter(!(r1_min > r2_max | r2_min > r1_max)) %>%
+  nrow()
+
+
+pt2 <- read.csv(here(here(), 'PuzzleInputs/Day4.txt'),
+                 header = F,
+                 colClasses = 'character',
+                 col.names = c('r1', 'r2')) %>%
+  cSplit(c('r1', 'r2'), sep = '-', direction = 'wide') %>%
+  suppressWarnings() %>%
+  dplyr::rename('r1_min' = 'r1_1',
+                'r1_max' = 'r1_2',
+                'r2_min' = 'r2_1',
+                'r2_max' = 'r2_2') %>%
+  dplyr::filter(!(r1_min > r2_max | r2_min > r1_max)) %>%
+  nrow()
+
+```
